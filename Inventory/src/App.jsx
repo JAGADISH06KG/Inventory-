@@ -1,9 +1,10 @@
 import React from 'react'
+import Available from './pages/Available'
 
-const App = () => {
+function App ()  {
   return (
     <div>
-      
+      <Available />
     </div>
   )
 }
