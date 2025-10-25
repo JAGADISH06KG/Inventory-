@@ -1,176 +1,223 @@
 import React, { useState } from "react";
+import {
+  Container,
+  Typography,
+  Box,
+  TextField,
+  Select,
+  MenuItem,
+  Table,
+  TableHead,
+  TableBody,
+  TableCell,
+  TableRow,
+  TableContainer,
+  Paper,
+  Button,
+  InputAdornment,
+  IconButton,
+} from "@mui/material";
+import { FilterAltOutlined, Search } from "@mui/icons-material";
 
-function Available() {
-  // Stock data
-  const [stockData] = useState([
-    { category: "Diary", subCategory: "green packet", item: "Milk", quantity: 2 },
-    { category: "Diary", subCategory: "orange", item: "Milk", quantity: 2 },
-    { category: "Candies", subCategory: "-", item: "Chocolate", quantity: 2 },
-    { category: "Diary", subCategory: "blue packet", item: "Milk", quantity: 2 },
-    { category: "Diary", subCategory: "red packet", item: "Milk", quantity: 4 },
-     { category: "Vegetables", subCategory: "-", item: "onion", quantity: "20kg"},
-     { category: "Vegetables", subCategory: "-", item: "Tomato", quantity: "20kg"},
-     { category: "Stationary", subCategory: "-", item: "pencil", quantity: 50},
-     { category: "cleaning needs", subCategory: "-", item: "happic", quantity: 50},
-     { category: "cleaning needs", subCategory: "-", item: "lizol", quantity: 50},
-      { category: "spices", subCategory: "-", item: "cinnamon", quantity: 50},
-      { category: "spices", subCategory: "-", item: "cardamom", quantity: 50},
-      { category: "spices", subCategory: "-", item: "cloves", quantity: 50},
-      { category: "Bakery", subCategory: "-", item: "bread", quantity: "50 packets"},
-      
-      
+// Sample available items data
+const sampleItems = [
+  {
+    id: 1,
+    category: "Dairy",
+    subcategory: "Milk",
+    item: "Amul",
+    expiry: "2025-11-10",
+    sustainDays: 10,
+    quantity: 50,
+  },
+  {
+    id: 2,
+    category: "Beverages",
+    subcategory: "Juices",
+    item: "Real",
+    expiry: "2025-11-05",
+    sustainDays: 5,
+    quantity: 25,
+  },
+  {
+    id: 3,
+    category: "Stationary",
+    subcategory: "Writing",
+    item: "Pen",
+    expiry: "-",
+    sustainDays: 100,
+    quantity: 120,
+  },
+   {
+    id: 4,
+    category: "Cakes",
+    subcategory: "Piece Cake",
+    item: "Britania Cup",
+    expiry: "2026-12-01",
+    sustainDays: 100,
+    quantity: 120,
+  },
+   {
+    id: 5,
+    category: "grocery",
+    subcategory: "making",
+    item: "flour",
+    expiry: "2026-03-01",
+    sustainDays: 100,
+    quantity: 120,
+  },
+   {
+    id: 6,
+    category: "Fashion",
+    subcategory: "Shoes",
+    item: "Puma Shoe",
+    expiry: "-",
+    sustainDays: 100,
+    quantity: 120,
+  },
+   {
+    id: 7,
+    category: "Stationary",
+    subcategory: "Writing",
+    item: "Pencil",
+    expiry: "-",
+    sustainDays: 100,
+    quantity: 120,
+  },
+   {
+    id: 8,
+    category: "Stationary",
+    subcategory: "Writing",
+    item: "Stick Pen",
+    expiry: "-",
+    sustainDays: 100,
+    quantity: 120,
+  },
+   {
+    id: 9,
+    category: "Stationary",
+    subcategory: "Writing",
+    item: "Colour Pencil",
+    expiry: "-",
+    sustainDays: 100,
+    quantity: 120,
+  },
+];
 
-      
-
-
-
-
-
-  ]);
-
+const Available = () => {
+  const [items, ] = useState(sampleItems);
+  const [filterCategory, setFilterCategory] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
-  const [filteredData, setFilteredData] = useState(stockData);
 
-  // Handle search
-  const handleSearch = () => {
-    const term = searchTerm.toLowerCase().trim();
-    if (term === "") {
-      setFilteredData(stockData); // reset if input empty
-    } else {
-      const filtered = stockData.filter(
-        (item) =>
-          item.category.toLowerCase().includes(term) ||
-          item.subCategory.toLowerCase().includes(term) ||
-          item.item.toLowerCase().includes(term)
-      );
-      setFilteredData(filtered);
-    }
-  };
+  // Filter logic
+  const filteredItems = items.filter((item) => {
+    return (
+      (filterCategory ? item.category === filterCategory : true) &&
+      (searchTerm
+        ? item.item.toLowerCase().includes(searchTerm.toLowerCase())
+        : true)
+    );
+  });
 
   return (
-    <div style={{ display: "flex", height: "100vh", fontFamily: "Arial, sans-serif" }}>
-      {/* Main Content */}
-      <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
-        {/* Header */}
-        <div
-          style={{
-            background: "#0f4c75",
-            color: "white",
-            padding: "10px 20px",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
+    <Container maxWidth="lg" sx={{ mt: 4 }}>
+      <Typography variant="h4" align="center" gutterBottom>
+        Available Items
+      </Typography>
+
+      {/* Filters */}
+      <Box
+        sx={{
+          display: "flex",
+          gap: 2,
+          flexWrap: "wrap",
+          mb: 2,
+          justifyContent: "center",
+        }}
+      >
+        <Select
+          value={filterCategory}
+          onChange={(e) => setFilterCategory(e.target.value)}
+          displayEmpty
+          sx={{ minWidth: 150 }}
+        >
+          <MenuItem value="">All Categories</MenuItem>
+          <MenuItem value="Dairy">Dairy</MenuItem>
+          <MenuItem value="Beverages">Beverages</MenuItem>
+          <MenuItem value="Stationary">Stationary</MenuItem>
+          <MenuItem value="Electronics">Electronics</MenuItem>
+          <MenuItem value="Groceries">Groceries</MenuItem>
+        </Select>
+
+        <TextField
+          placeholder="Search Item"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <Search />
+              </InputAdornment>
+            ),
+          }}
+        />
+
+        <Button
+          variant="outlined"
+          startIcon={<FilterAltOutlined />}
+          onClick={() => {
+            setFilterCategory("");
+            setSearchTerm("");
           }}
         >
-          <h2 style={{ margin: 0 }}>INVENTORY MANAGEMENT SYSTEM</h2>
-          <div>
-            <select style={{ marginRight: "10px", padding: "5px" }}>
-              <option>RMKEC</option>
-              <option>RMKCET</option>
-            </select>
-            <button
-              style={{
-                background: "red",
-                color: "white",
-                border: "none",
-                borderRadius: "5px",
-                padding: "6px 12px",
-                cursor: "pointer",
-              }}
-            >
-              Logout
-            </button>
-          </div>
-        </div>
+          Clear Filters
+        </Button>
+      </Box>
 
-        {/* Content Area */}
-        <div style={{ padding: "20px", textAlign: "center" }}>
-          <h2 style={{ marginBottom: "20px" }}>AVAILABLE STOCK</h2>
+      {/* Item Count */}
+      <Typography variant="subtitle1" mb={1}>
+        Total Items: {filteredItems.length}
+      </Typography>
 
-          {/* Search */}
-          <div style={{ marginBottom: "20px" }}>
-            <input
-              type="text"
-              placeholder="Enter item name / Category name"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              style={{
-                padding: "8px",
-                width: "300px",
-                border: "1px solid #ccc",
-                borderRadius: "4px",
-                marginRight: "10px",
-              }}
-            />
-            <button
-              onClick={handleSearch}
-              style={{
-                padding: "8px 16px",
-                background: "green",
-                color: "white",
-                border: "none",
-                borderRadius: "4px",
-                cursor: "pointer",
-              }}
-            >
-              Search
-            </button>
-          </div>
-
-          {/* Table */}
-          <table
-            style={{
-              width: "90%",
-              margin: "0 auto",
-              borderCollapse: "collapse",
-              boxShadow: "0 0 5px rgba(0,0,0,0.1)",
-            }}
-          >
-            <thead style={{ background: "#0f4c75", color: "white" }}>
-              <tr>
-                <th style={tableHeader}>CATEGORY</th>
-                <th style={tableHeader}>SUB CATEGORY</th>
-                <th style={tableHeader}>ITEM</th>
-                <th style={tableHeader}>QUANTITY</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredData.length > 0 ? (
-                filteredData.map((row, index) => (
-                  <tr key={index}>
-                    <td style={tableCell}>{row.category}</td>
-                    <td style={tableCell}>{row.subCategory}</td>
-                    <td style={tableCell}>{row.item}</td>
-                    <td style={tableCell}>{row.quantity}</td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="4" style={{ padding: "10px", textAlign: "center" }}>
-                    No matching records found
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
+      {/* Table */}
+      <TableContainer component={Paper} sx={{ borderRadius: 3, boxShadow: 3 }}>
+        <Table>
+          <TableHead sx={{ backgroundColor: "#1976d2" }}>
+            <TableRow>
+              <TableCell sx={{ color: "white" }}>SNo</TableCell>
+              <TableCell sx={{ color: "white" }}>Category</TableCell>
+              <TableCell sx={{ color: "white" }}>Subcategory</TableCell>
+              <TableCell sx={{ color: "white" }}>Item</TableCell>
+              <TableCell sx={{ color: "white" }}>Quantity</TableCell>
+              <TableCell sx={{ color: "white" }}>Expiry Date</TableCell>
+              <TableCell sx={{ color: "white" }}>Sustain Days</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {filteredItems.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={7} align="center">
+                  No items found
+                </TableCell>
+              </TableRow>
+            ) : (
+              filteredItems.map((row, index) => (
+                <TableRow key={row.id}>
+                  <TableCell>{index + 1}</TableCell>
+                  <TableCell>{row.category}</TableCell>
+                  <TableCell>{row.subcategory}</TableCell>
+                  <TableCell>{row.item}</TableCell>
+                  <TableCell>{row.quantity}</TableCell>
+                  <TableCell>{row.expiry}</TableCell>
+                  <TableCell>{row.sustainDays}</TableCell>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Container>
   );
-}
-
-// Table styles
-const tableHeader = {
-  padding: "12px",
-  border: "1px solid #ddd",
-  textAlign: "center",
-  fontWeight: "bold",
-};
-
-const tableCell = {
-  padding: "10px",
-  border: "1px solid #ddd",
-  textAlign: "center",
 };
 
 export default Available;
